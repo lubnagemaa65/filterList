@@ -5,7 +5,8 @@ import 'package:profiles/app/widgets/dropdownlist.dart';
 
 class UsersListView extends GetView{
 
- 
+   final TextEditingController searchController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class UsersListView extends GetView{
               Obx(() => isSearching.value
                   ? Expanded(
                       child: TextField(
-                        controller: controller,
+                        controller: searchController,
                         autofocus: true,
                         decoration: InputDecoration(
                           hintText: "Search user...",
@@ -42,6 +43,7 @@ class UsersListView extends GetView{
                   isSearching.value = !isSearching.value;
                 },
               ),
+              SizedBox(width: 10,),
               MyDropdownlist(),
             ],
           ),
