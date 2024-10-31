@@ -1,24 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:profiles/app/modules/usersList/controllers/users_list_controller.dart';
 import 'package:profiles/app/widgets/card.dart';
 import 'package:profiles/app/widgets/dropdownlist.dart';
 
-class UsersListView extends GetView<UsersListController> {
-  final UsersListController usersListController =
-      Get.put(UsersListController());
+class UsersListView extends GetView{
+
  
 
   @override
   Widget build(BuildContext context) {
+      final RxBool isSearching = false.obs;
+
     return Scaffold(
       backgroundColor: Colors.greenAccent,
       appBar: AppBar(
         title: Text("Users Profiles"),
-           actions: [
-          // Dropdown for selecting gender filter (No Obx wrapper)
-          Container(margin: EdgeInsets.all(12),
-            child: MyDropdownlist()),
+        actions: [
+          Row(
+            children: [
+              // Search TextField within an Obx widget
+              Obx(() => isSearching.value
+                  ? Expanded(
+                      child: TextField(
+                        controller: controller,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          hintText: "Search user...",
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (query) {
+                          controller.searchUsers(
+                              query); // Call the search method in controller
+                        },
+                      ),
+                    )
+                  : Container()),
+              // Search icon button to toggle search visibility
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  isSearching.value = !isSearching.value;
+                },
+              ),
+              MyDropdownlist(),
+            ],
+          ),
         ],
       ),
       body: Obx(() {

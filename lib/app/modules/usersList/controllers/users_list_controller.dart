@@ -13,8 +13,11 @@ class UsersListController extends GetxController {
   var hasMoreData = true.obs;
   var users = <Users>[].obs;
     var picture = <Picture>[].obs;
+  RxBool isSearching = false.obs;
+    RxList<Users> filteredUsers = <Users>[].obs;
 
-  var selectedGender = 'male'; // Default gender
+
+  var selectedGender = 'ALL'; // Default gender
 
   @override
   void onInit() {
@@ -30,7 +33,20 @@ class UsersListController extends GetxController {
       }
     });
   }
-
+  void searchUsers(String query) {
+    if (query.isEmpty) {
+      // If the search is cleared, reset the filtered list to the full user list
+      filteredUsers.assignAll(users);
+    } else {
+      // Filter users by matching their name with the search query
+      filteredUsers.assignAll(
+        users.where((user) {
+          final fullName = "${user.name.first} ${user.name.last}".toLowerCase();
+          return fullName.contains(query.toLowerCase());
+        }).toList(),
+      );
+    }
+  }
   Future<void> fetchData({String? gender}) async {
     if (isLoading.value) return;
 
