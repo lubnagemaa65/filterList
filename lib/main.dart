@@ -7,7 +7,7 @@ import 'package:profiles/app/modules/usersList/bindings/users_list_binding.dart'
 import 'app/routes/app_pages.dart';
 
 void main() {
-  configureDependencies();
+  configureDependencies(Env.sl);
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,

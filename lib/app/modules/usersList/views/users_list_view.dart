@@ -15,9 +15,10 @@ class UsersListView extends GetView<UsersListController> {
       backgroundColor: Colors.greenAccent,
       appBar: AppBar(
         title: Text("Users Profiles"),
-        actions: [
-          // Dropdown for selecting gender filter
-          Obx( () =>MyDropdownlist()  ),
+           actions: [
+          // Dropdown for selecting gender filter (No Obx wrapper)
+          Container(margin: EdgeInsets.all(12),
+            child: MyDropdownlist()),
         ],
       ),
       body: Obx(() {
