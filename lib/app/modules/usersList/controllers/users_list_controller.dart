@@ -8,6 +8,8 @@ class UsersListController extends GetxController {
   
   final Dio _dio = Dio();
   final ScrollController scrollController = ScrollController();
+     final TextEditingController searchController = TextEditingController();
+
   var isLoading = false.obs;
   var page = 1;
   var hasMoreData = true.obs;
@@ -15,13 +17,12 @@ class UsersListController extends GetxController {
     var picture = <Picture>[].obs;
   RxBool isSearching = false.obs;
     RxList<Users> filteredUsers = <Users>[].obs;
+    
 
-
-  var selectedGender = 'ALL'; // Default gender
+  var selectedGender = 'All'.obs; // Default gender
 
   @override
   void onInit() {
-    
     super.onInit();
     fetchData(); // Initial data fetch
     scrollController.addListener(() {
@@ -33,12 +34,14 @@ class UsersListController extends GetxController {
       }
     });
   }
-  void searchUsers(String query) {
+
+
+void searchUsers(String query) {
     if (query.isEmpty) {
-      // If the search is cleared, reset the filtered list to the full user list
+      // If the search is cleared, reset to the full user list
       filteredUsers.assignAll(users);
     } else {
-      // Filter users by matching their name with the search query
+      // Filter all users based on the query
       filteredUsers.assignAll(
         users.where((user) {
           final fullName = "${user.name.first} ${user.name.last}".toLowerCase();
@@ -47,6 +50,7 @@ class UsersListController extends GetxController {
       );
     }
   }
+  
   Future<void> fetchData({String? gender}) async {
     if (isLoading.value) return;
 
@@ -75,7 +79,7 @@ class UsersListController extends GetxController {
   }
 
   void applyGenderFilter(String gender) {
-    selectedGender = gender.toLowerCase();
+    selectedGender.value = gender;
     users.clear();
     page = 1;
     hasMoreData.value = true;
