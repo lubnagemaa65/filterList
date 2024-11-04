@@ -4,8 +4,8 @@
 
     <application
         android:label="profiles"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:name="profiles"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -5,21 +5,18 @@ import 'package:profiles/app/models/usersModel.dart';
 import 'package:flutter/material.dart';
 
 class UsersListController extends GetxController {
-  
   final Dio _dio = Dio();
   final ScrollController scrollController = ScrollController();
-     final TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   var isLoading = false.obs;
   var page = 1;
   var hasMoreData = true.obs;
   var users = <Users>[].obs;
-    var picture = <Picture>[].obs;
+  var picture = <Picture>[].obs;
   RxBool isSearching = false.obs;
-    RxList<Users> filteredUsers = <Users>[].obs;
-    
-
-  var selectedGender = 'All'.obs; // Default gender
+  RxList<Users> filteredUsers = <Users>[].obs;
+  var selectedGender = 'All'.obs; // Default gender filter set to 'All'
 
   @override
   void onInit() {
@@ -35,8 +32,7 @@ class UsersListController extends GetxController {
     });
   }
 
-
-void searchUsers(String query) {
+  void searchUsers(String query) {
     if (query.isEmpty) {
       // If the search is cleared, reset to the full user list
       filteredUsers.assignAll(users);
@@ -50,16 +46,20 @@ void searchUsers(String query) {
       );
     }
   }
-  
+
   Future<void> fetchData({String? gender}) async {
     if (isLoading.value) return;
 
     isLoading.value = true;
 
     try {
-      final response = await _dio.get(
-        'https://randomuser.me/api/?page=$page&results=10&gender=${gender ?? selectedGender}',
-      );
+      // Build API URL based on the selected gender
+      String url = 'https://randomuser.me/api/?page=$page&results=10';
+      if (gender != null && gender != 'All') {
+        url += '&gender=${gender.toLowerCase()}';
+      }
+
+      final response = await _dio.get(url);
 
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['results'];
@@ -80,10 +80,10 @@ void searchUsers(String query) {
 
   void applyGenderFilter(String gender) {
     selectedGender.value = gender;
-    users.clear();
-    page = 1;
+    users.clear(); // Clear current users
+    page = 1; // Reset pagination
     hasMoreData.value = true;
-    fetchData();
+    fetchData(gender: gender); // Fetch data based on new gender filter
   }
 
   @override
